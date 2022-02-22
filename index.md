@@ -10,10 +10,6 @@ The main window consists of three zones:
  - The **Note View** displays the currently played MIDI notes.
  - **[syxlog](https://github.com/oin/syxlog) messages** are appended to a text view in the order they arrive.
 
-# Download
-
-- [MIDIPlot v1.0](https://github.com/oin/MIDIPlot/releases/tag/v1.0) (macOS 10.9+, Intel and Apple Silicon)
-
 # How to use
 
 MIDIPlot automatically connects to all available MIDI sources and listens to all channels at once.
@@ -30,6 +26,10 @@ In the _Plots_ menu (or in the contextual menu displayed by right-clicking the e
 The first 9 plot sets can be recalled instantly by pressing _Cmd+1_ to _Cmd+9_, or by selecting the corresponding entry in the _Plots_ menu.
 
 Press _Cmd+K_ to clear all (plots, stuck MIDI keys, as well as [syxlog](https://github.com/oin/syxlog) messages).
+
+# Download
+
+- [MIDIPlot v1.0](https://github.com/oin/MIDIPlot/releases/tag/v1.0) (macOS 10.9+, Intel and Apple Silicon)
 
 # Acknowledgements
 
