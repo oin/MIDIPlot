@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:MainMenu.xib">
+   </FileRef>
+   <FileRef
+      location = "group:MIDIPlot.mm">
+   </FileRef>
+   <FileRef
+      location = "group:MidiKeyView.h">
+   </FileRef>
+   <FileRef
+      location = "group:Multiplot.h">
+   </FileRef>
+   <FileRef
+      location = "group:MultiplotView.h">
+   </FileRef>
+</Workspace>
