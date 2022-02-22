@@ -1,37 +1,36 @@
-## Welcome to GitHub Pages
+# MIDIPlot
 
-You can use the [editor on GitHub](https://github.com/oin/MIDIPlot/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+MIDIPlot is a small utility designed to quickly visualize MIDI CC, pitch-bend, and channel aftertouch in real-time.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+![The main window of MIDIPlot, with its three zones detailed](https://github.com/oin/MIDIPlot/raw/main/README.png)
 
-### Markdown
+The main window consists of three zones:
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+ - The **Plot Area** allows you to monitor MIDI CC, pitch-bend and channel aftertouch values.
+ - The **Note View** displays the currently played MIDI notes.
+ - **[syxlog](https://github.com/oin/syxlog) messages** are appended to a text view in the order they arrive.
 
-```markdown
-Syntax highlighted code block
+# Download
 
-# Header 1
-## Header 2
-### Header 3
+- [MIDIPlot v1.0](https://github.com/oin/MIDIPlot/releases/tag/v1.0) (macOS 10.9+, Intel and Apple Silicon)
 
-- Bulleted
-- List
+# How to use
 
-1. Numbered
-2. List
+MIDIPlot automatically connects to all available MIDI sources and listens to all channels at once.
 
-**Bold** and _Italic_ and `Code` text
+You can add an arbitrary number of plots into the Plot Area, either by using the _Plots_ menu, by right-clicking the empty space in the Plot Area, or by clicking the _Add Plot_ button.
+Press _Cmd+0_ to remove all plots.
 
-[Link](url) and ![Image](src)
-```
+Each plot can display up to 8 signals, each with its own color.
+_Right-click a plot_ to add or remove signals.
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+To adjust the speed at which signals scroll, shift-scroll using your mouse, or use a zoom gesture using your trackpad.
 
-### Jekyll Themes
+In the _Plots_ menu (or in the contextual menu displayed by right-clicking the empty space in the Plot Area), you can save the current plot configuration as a _Plot Set_ to be recalled later.
+The first 9 plot sets can be recalled instantly by pressing _Cmd+1_ to _Cmd+9_, or by selecting the corresponding entry in the _Plots_ menu.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/oin/MIDIPlot/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+Press _Cmd+K_ to clear all (plots, stuck MIDI keys, as well as [syxlog](https://github.com/oin/syxlog) messages).
 
-### Support or Contact
+# Acknowledgements
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+This project uses code from [MidiKeys](https://github.com/flit/MidiKeys).
