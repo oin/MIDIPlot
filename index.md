@@ -1,5 +1,3 @@
-# MIDIPlot
-
 MIDIPlot is a small utility designed to quickly visualize MIDI CC, pitch-bend, and channel aftertouch in real-time.
 
 ![The main window of MIDIPlot, with its three zones detailed](https://github.com/oin/MIDIPlot/raw/main/README.png)
