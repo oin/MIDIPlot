@@ -2,7 +2,7 @@ include base.mk
 
 SRC += Multiplot.mm MultiplotView.mm MidiKeyView.mm MIDIPlot.mm midi_in.mm CocoaAdditions.mm
 
-CCFLAGS := $(CCFLAGS) -fmessage-length=0 -Wall -Wextra -Wno-unused-variable -Wno-unused-parameter -Wno-missing-declarations -Wno-unknown-pragmas -I. -mmacosx-version-min=10.9 -Wno-deprecated-declarations -DLOG_FILE_HANDLE=stderr  -ffast-math -Wno-nullability-completeness -DPHYBUILDER=1
+CCFLAGS := $(CCFLAGS) -fmessage-length=0 -Wall -Wextra -Wno-unused-variable -Wno-unused-parameter -Wno-missing-declarations -Wno-unknown-pragmas -I. -mmacosx-version-min=10.9 -Wno-deprecated-declarations -ffast-math -Wno-nullability-completeness
 CFLAGS := $(CFLAGS) -std=c11 -Wno-missing-prototypes
 CXXFLAGS := $(CXXFLAGS) -std=c++14
 LDFLAGS := $(LDFLAGS) -mmacosx-version-min=10.9 -framework Foundation -framework Cocoa -framework CoreMIDI -framework QuartzCore -framework AudioToolbox
