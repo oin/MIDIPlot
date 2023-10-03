@@ -42,6 +42,7 @@
 	}
 	CGPathRef immutablePath = CGPathCreateCopy(path);
 	CGPathRelease(path);
+	CFAutorelease(immutablePath);
 	return immutablePath;
 }
 
