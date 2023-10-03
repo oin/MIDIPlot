@@ -5,3 +5,4 @@ xcuserdata
 Config.mk
 *.sublime-workspace
 *.fdb_latexmk
+.vscode
