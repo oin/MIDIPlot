@@ -5,6 +5,8 @@
 
 @interface MultiplotView : NSView <MultiplotDelegate>
 @property (nonatomic, assign) size_t lookaheadSamples;
+@property (nonatomic, strong) NSMutableDictionary *keyLabels;
+@property (nonatomic, strong) NSMutableDictionary *categoryLabels;
 -(NSDictionary *)configuration;
 -(void)setConfiguration:(NSDictionary *)configuration;
 -(NSRect)contentBounds;

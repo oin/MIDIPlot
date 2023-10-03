@@ -1,12 +1,14 @@
 #import "MultiplotView.h"
+#include <Foundation/Foundation.h>
 #import "MidiKeyView.h"
 #import <Cocoa/Cocoa.h>
 #include "midi_in.hpp"
 #include "midi.hpp"
 #include <map>
 
-static float value[130];
-static bool value_used[130];
+static const size_t value_size = 130 * 17;
+static float value[value_size];
+static bool value_used[value_size];
 
 @interface MIDIPlot : NSObject
 {
@@ -92,6 +94,27 @@ static CVReturn DisplayLinkRenderCallback(CVDisplayLinkRef displayLink, const CV
 	for(size_t i=0; i<128; ++i) {
 		[keys addObject:[NSString stringWithFormat:@"cc%zu", i]];
 	}
+
+	for(size_t j=0; j<16; ++j) {
+		[keys addObject:[NSString stringWithFormat:@"ch%zu/bend", j+1]];
+		[keys addObject:[NSString stringWithFormat:@"ch%zu/aftouch", j+1]];
+		for(size_t i=0; i<128; ++i) {
+			[keys addObject:[NSString stringWithFormat:@"ch%zu/cc%zu", j+1, i]];
+		}
+	}
+
+	NSMutableDictionary *keyLabels = self.multiplotView.keyLabels;
+	keyLabels[@"bend"] = @"Pitch-bend";
+	keyLabels[@"aftouch"] = @"Channel Aftertouch";
+	for(size_t i=0; i<128; ++i) {
+		keyLabels[[NSString stringWithFormat:@"cc%zu", i]] = [NSString stringWithFormat:@"CC %zu", i];
+	}
+
+	NSMutableDictionary *categoryLabels = self.multiplotView.categoryLabels;
+	categoryLabels[@"/"] = @"All channels";
+	for(size_t j=0; j<16; ++j) {
+		categoryLabels[[NSString stringWithFormat:@"ch%zu", j+1]] = [NSString stringWithFormat:@"Channel %zu", j+1];
+	}
 }
 
 -(void)updatePlotMenuItem
@@ -127,7 +150,7 @@ static CVReturn DisplayLinkRenderCallback(CVDisplayLinkRef displayLink, const CV
 
 -(void)updatePlots
 {
-	for(size_t i=0; i<130; ++i) {
+	for(size_t i=0; i<value_size; ++i) {
 		NSString *key = [keys objectAtIndex:i];
 		if(value_used[i]) {
 			[self.multiplotView useKey:key];
@@ -204,14 +227,20 @@ void midi_in_on_message(uint32_t identifier, midi_msg_t m, uint64_t t) {
 		const float v = float(bend) / 8192.f;
 		value[0] = v;
 		value_used[0] = true;
+		value[130 * (m.channel + 1)] = v;
+		value_used[130 * (m.channel + 1)] = true;
 	} else if(type == midi_msg_type_channel_pressure) {
 		const float v = float(m.data1) / 127.f;
 		value[1] = v;
 		value_used[1] = true;
+		value[1 + 130 * (m.channel + 1)] = v;
+		value_used[1 + 130 * (m.channel + 1)] = true;
 	} else if(type == midi_msg_type_control_change) {
 		const float v = float(m.data2) / 127.f;
 		value[m.data1 + 2] = v;
 		value_used[m.data1 + 2] = true;
+		value[2 + m.data1 + 130 * (m.channel + 1)] = v;
+		value_used[2 + m.data1 + 130 * (m.channel + 1)] = true;
 	}
 }
 

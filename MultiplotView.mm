@@ -1,4 +1,6 @@
 #import "MultiplotView.h"
+#include <Foundation/Foundation.h>
+#include <AppKit/AppKit.h>
 #import "Multiplot.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -77,7 +79,7 @@ static NSImage *MultiplotViewMenuImageWithColor(NSColor *color) {
 {
 	self.multiplots = [NSMutableArray array];
 	self.keysForMultiplots = [NSMutableArray array];
-	self.allKeys = [NSMutableSet setWithCapacity:130];
+	self.allKeys = [NSMutableSet setWithCapacity:130 * 17];
 
 	self.autoresizesSubviews = YES;
 
@@ -121,7 +123,8 @@ static NSImage *MultiplotViewMenuImageWithColor(NSColor *color) {
 
 -(void)commonInit
 {
-
+	self.keyLabels = [[NSMutableDictionary alloc] init];
+	self.categoryLabels = [[NSMutableDictionary alloc] init];
 }
 
 -(instancetype)initWithFrame:(NSRect)frame
@@ -322,19 +325,69 @@ static NSImage *MultiplotViewMenuImageWithColor(NSColor *color) {
 	return [self.allKeys sortedArrayUsingDescriptors:@[descriptor]];
 }
 
+-(NSDictionary *)allSortedKeysCategorized
+{
+	NSSortDescriptor *descriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(localizedStandardCompare:)];
+	NSMutableDictionary *d = [[NSMutableDictionary alloc] init];
+
+	for(NSString *key in self.allKeys) {
+		NSArray *components = [key componentsSeparatedByString:@"/"];
+		const auto componentSize = [components count];
+
+		NSString *simplifiedKey = key;
+		NSString *category = @"/";
+		if(componentSize == 2) {
+			category = components[0];
+			simplifiedKey = components[1];
+		}
+
+		if(d[category]) {
+			[d[category] addObject:simplifiedKey];
+		} else {
+			d[category] = [[NSMutableArray alloc] init];
+		}
+	}
+
+	// Sort category contents and make them immutable
+	for(NSString *category in d.allKeys) {
+		d[category] = [NSArray arrayWithArray:[d[category] sortedArrayUsingDescriptors:@[descriptor]]];
+	}
+
+	return [NSDictionary dictionaryWithDictionary:d];
+}
+
+-(void)appendMenuItemsForSortedKeysCategorizedToMenu:(NSMenu *)menu filter:(bool(^)(NSString *fullKey, NSMenuItem *item))filterFn
+{
+	NSDictionary *categories = [self allSortedKeysCategorized];
+	NSSortDescriptor *descriptor = [NSSortDescriptor sortDescriptorWithKey:@"description" ascending:YES selector:@selector(localizedStandardCompare:)];
+	NSArray *categoryNames = [[categories allKeys] sortedArrayUsingDescriptors:@[descriptor]];
+	for(NSString *category in categoryNames) {
+		NSMenu *parent = [[NSMenu alloc] initWithTitle:category];
+		for(NSString *key in categories[category]) {
+			BOOL isInRootCategory = [category isEqualToString:@"/"];
+			NSString *fullKey = isInRootCategory? key : [NSString stringWithFormat:@"%@/%@", category, key];
+			NSString *label = self.keyLabels[key]?: key;
+			NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:label action:@selector(newMultiplotMenuItemClicked:) keyEquivalent:@""];
+			item.target = self;
+			item.representedObject = fullKey;
+			if(filterFn && !filterFn(fullKey, item)) {
+				continue;
+			}
+			[parent addItem:item];
+		}
+
+		NSString *label = self.categoryLabels[category]?: category;
+		NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:label action:nil keyEquivalent:@""];
+		item.submenu = parent;
+		[menu addItem:item];
+	}
+}
+
 -(NSMenu *)menuForNewMultiplot
 {
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@"New Multiplot"];
 
-	NSArray *keys = [self allSortedKeys];
-	size_t i = 0;
-	for(NSString *key in keys) {
-		NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:key action:@selector(newMultiplotMenuItemClicked:) keyEquivalent:@""];
-		item.target = self;
-		item.representedObject = key;
-		[menu addItem:item];
-		++i;
-	}
+	[self appendMenuItemsForSortedKeysCategorizedToMenu:menu filter:nil];
 	
 	[menu addItem:[NSMenuItem separatorItem]];
 
@@ -423,19 +476,13 @@ static NSImage *MultiplotViewMenuImageWithColor(NSColor *color) {
 	[menu addItem:[NSMenuItem separatorItem]];
 
 	if(size < MultiplotCapacity) {
-		NSArray *allKeys = [self allSortedKeys];
-		for(NSString *key in allKeys) {
-			if([keys containsObject:key]) {
-				continue;
-			}
+		[self appendMenuItemsForSortedKeysCategorizedToMenu:menu filter:^(NSString *fullKey, NSMenuItem *item) {
+			if([keys containsObject:fullKey]) return false;
 
-			NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:key action:@selector(multiplotKeyMenuItemClicked:) keyEquivalent:@""];
-			item.target = self;
 			item.state = NSOffState;
-			item.representedObject = key;
 			item.tag = index;
-			[menu addItem:item];
-		}
+			return true;
+		}];
 	}
 
 	return menu;
