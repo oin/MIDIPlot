@@ -46,7 +46,7 @@ $(APP): $(EXE) $(PLIST) $(RESOURCES) | $(BUILDDIR)
 	cp $(EXE) "$@/Contents/MacOS"
 	touch "$@"
 	xattr -cr "$@"
-	$(call Codesign,$@)
+	$(if $(DEBUG),,$(call Codesign,$@))
 
 .PHONY: app .FORCE
 app: $(APP)
