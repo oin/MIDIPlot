@@ -27,7 +27,7 @@ Press _Cmd+K_ to clear all (plots, stuck MIDI keys, as well as [syxlog](https://
 
 # Download
 
-- [MIDIPlot v1.0](https://github.com/oin/MIDIPlot/releases/tag/v1.0) (macOS 10.9+, Intel and Apple Silicon)
+- [MIDIPlot](https://github.com/oin/MIDIPlot/releases) (macOS 10.9+, Intel and Apple Silicon)
 
 # Acknowledgements
 
