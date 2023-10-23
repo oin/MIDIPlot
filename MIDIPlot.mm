@@ -245,7 +245,7 @@ void midi_in_on_message(uint32_t identifier, midi_msg_t m, uint64_t t) {
 }
 
 void midi_in_on_syxlog(const char* str, bool aborted) {
-	NSString *string = [NSString stringWithFormat:@"%s%s", str, aborted? " [aborted]" : ""];
+	NSString *string = [NSString stringWithFormat:@"%s%s\n", str, aborted? " [aborted]" : ""];
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[MIDIPlot instance] addSyxlogLineWithString:string];
 	});
